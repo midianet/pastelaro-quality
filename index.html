@@ -1,0 +1,170 @@
+<html>
+    <head>
+        <title>Pastelaró</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <style>
+            .background{
+                padding: 0 0 0 0;
+                margin: 0 0 0 0;
+                background-image: url("img/background.png");
+                width:100%;
+                height:100%;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                object-fit: contain;
+                background-size: cover;
+                object-position:50% 50%;
+                background-color: #cccccc;
+            }
+            .container { 
+                width: 550px; 
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center; 
+            }
+
+            .ratings {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                direction: rtl;
+                text-align: center;
+            }
+
+            .text{
+                width: 300px;
+                border-radius: 4px;
+                border-width: 1px;
+                border-color: #2f7d80;
+                background-color: #c4f2f2;
+            }
+
+            .text::placeholder { 
+                color:#81b8b2 ;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                opacity: 1; /* Firefox */
+            }
+            .text:focus { 
+                outline: none !important;
+                border-color: #37726a;
+                box-shadow: 0 0 10px #329988;
+            }
+
+            .email {
+                height: 30px;
+            }
+
+            .star {
+                position: relative;
+                line-height: 60px;
+                display: inline-block;
+                transition: color 0.2s ease;
+                color: #ebebeb;
+            }
+
+            .star:before {
+                content: '\2605';
+                width: 60px;
+                height: 60px;
+                font-size: 60px;
+            }
+            .star:hover,
+            .star.selected,
+            .star:hover ~ .star,
+            .star.selected ~ .star{
+                transition: color 0.8s ease;
+                color: #0e5052;
+            }
+            .btn {
+                background:linear-gradient(to bottom, #349ab3 5%, #349ab3 100%);
+                background-color:#349ab3;
+                border-radius:6px;
+                border:1px solid #657867;
+                display:inline-block;
+                cursor:pointer;
+                color:#ffffff;
+                font-family:Verdana;
+                font-size:17px;
+                padding:8px 17px;
+                text-decoration:none;
+                text-shadow:1px 3px 3px #2d7d7d;
+            }
+            .btn:hover {
+                background:linear-gradient(to bottom, #349ab3 5%, #349ab3 100%);
+                background-color:#349ab3;
+            }
+            .btn:active {
+                position:relative;
+                top:1px;
+            }
+            .error{
+                color: red;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-size: 15px;
+            }
+            .errorEmail{
+                color: red;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-size: 15px;
+            }
+        </style>
+    </head>
+    <body class="background">
+        <div class="container">
+            <img alt="Logo Pastelaró" src="img/logo_pastelaro.png"/>    
+            <ul class="ratings">
+                <li value="5" class="star"></li>
+                <li value="4" class="star"></li>
+                <li value="3" class="star"></li>
+                <li value="2" class="star"></li>
+                <li value="1" class="star"></li>
+            </ul>
+            <p style="display: none;" class="error">Vote primeiro para enviar</p>
+            <p><input class="text email" placeholder="Informe seu email (opcional)" onblur="validateEmail()" maxlength="80" type="email"/></p>
+            <p style="display: none;" class="errorEmail">Email inválido</p>
+            <p><textarea placeholder="Deixe aqui sua sugestão/Elogio" class="text" maxlength="200" rows="4"></textarea></p>
+            <p><button type="button" onclick="submit()" class="btn">Enviar</button></p>
+            <!-- <p style="color: #0e5052; font-family: Verdana, Geneva, Tahoma, sans-serif; ">Obrigado, seu feedback será muito importante pra gente.</p> -->
+        </div>
+        <script>
+            let voted = false;
+            $(function (){
+                let star = '.star', selected = '.selected';
+                $(star).on('click', function(){
+                    $(selected).each(function(){
+                        $(this).removeClass('selected');
+                    });
+                    $(this).addClass('selected');
+                    voted = true;
+                    $('.error').hide();
+                });
+            });
+            function validateEmail(){
+                let email = $('.email').val();
+                if(email){
+                    let pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+                    pattern.test(email)? $('.errorEmail').hide() : $('.errorEmail').show();
+                }else{
+                    $('.errorEmail').hide();
+                }
+            }
+            function submit(){
+                if(!voted){
+                    $('.error').show();
+                    return;
+                }
+                console.log("ok");
+                // $.ajax({
+                //     type: "POST",
+                //     url: 'http://localhost:8080/',
+                //     data: data,
+                //     success: success,
+                //     dataType: JSON
+                // });
+            }
+        </script>
+    </body>
+</html>
