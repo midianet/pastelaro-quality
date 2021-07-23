@@ -33,6 +33,15 @@
                 direction: rtl;
                 text-align: center;
             }
+            .rate{
+                width: 100%;
+            }
+
+            .thanks{
+                color: #0e5052; 
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-size: 20px;
+            }
 
             .text{
                 width: 300px;
@@ -55,6 +64,26 @@
 
             .email {
                 height: 30px;
+            }
+
+            .comment {
+                resize: none;
+            }
+
+            a:link {
+                text-decoration: none;
+                font-size: 30px;
+                color: #ecf5ef;
+            }
+            a:visited {
+                color: #ecf5ef;
+            }
+
+            a:hover {
+                color: #ecf5ef;
+            }
+            a:active {
+                color: #ecf5ef;
             }
 
             .star {
@@ -114,23 +143,29 @@
     </head>
     <body class="background">
         <div class="container">
-            <img alt="Logo Pastelaró" src="img/logo_pastelaro.png"/>    
-            <ul class="ratings">
-                <li value="5" class="star"></li>
-                <li value="4" class="star"></li>
-                <li value="3" class="star"></li>
-                <li value="2" class="star"></li>
-                <li value="1" class="star"></li>
-            </ul>
-            <p style="display: none;" class="error">Vote primeiro para enviar</p>
-            <p><input class="text email" placeholder="Informe seu email (opcional)" onblur="validateEmail()" maxlength="80" type="email"/></p>
-            <p style="display: none;" class="errorEmail">Email inválido</p>
-            <p><textarea placeholder="Deixe aqui sua sugestão/Elogio" class="text" maxlength="200" rows="4"></textarea></p>
-            <p><button type="button" onclick="submit()" class="btn">Enviar</button></p>
-            <!-- <p style="color: #0e5052; font-family: Verdana, Geneva, Tahoma, sans-serif; ">Obrigado, seu feedback será muito importante pra gente.</p> -->
+            <img alt="Logo Pastelaró" src="img/logo_pastelaro.png"/>
+            <div class="rate">
+                <ul class="ratings">
+                    <li value="5" class="star"></li>
+                    <li value="4" class="star"></li>
+                    <li value="3" class="star"></li>
+                    <li value="2" class="star"></li>
+                    <li value="1" class="star"></li>
+                </ul>
+                <p style="display: none;" class="error">Vote primeiro para enviar</p>
+                <p><input class="text email" placeholder="Informe seu email (opcional)" onblur="validateEmail()" maxlength="80" type="email"/></p>
+                <p style="display: none;" class="errorEmail">Email inválido</p>
+                <p><textarea placeholder="Deixe aqui sua sugestão/Elogio" class="text comment" maxlength="300" rows="4"></textarea></p>
+                <p><button type="button" onclick="submit()" class="btn">Enviar</button></p>
+            </div>
+            <div style="display: none;" class="thanks">
+                 <p>Obrigado, seu feedback será muito importante.</p>
+                 <p><a href="http://www.pastelaro.com.br">Acesse nosso site</a></p>
+            </div>
         </div>
         <script>
             let voted = false;
+            let rate;
             $(function (){
                 let star = '.star', selected = '.selected';
                 $(star).on('click', function(){
@@ -139,9 +174,12 @@
                     });
                     $(this).addClass('selected');
                     voted = true;
+                    rate = $(this).prop("value");
+                    console.log(rate);
                     $('.error').hide();
                 });
             });
+
             function validateEmail(){
                 let email = $('.email').val();
                 if(email){
@@ -151,19 +189,32 @@
                     $('.errorEmail').hide();
                 }
             }
+
+            function createJSON() {
+                var vote = new Object();
+                vote.classificacao = rate;
+                let email   = $('.email').val();
+                let comment = $('.comment').val();
+                if(email) vote.email = email;
+                if(comment) vote.comentario = comment;
+                return JSON.stringify(vote);
+            }
+
             function submit(){
                 if(!voted){
                     $('.error').show();
                     return;
                 }
-                console.log("ok");
-                // $.ajax({
-                //     type: "POST",
-                //     url: 'http://localhost:8080/',
-                //     data: data,
-                //     success: success,
-                //     dataType: JSON
-                // });
+                let data = createJSON();
+                let ajax = $.ajax({
+                    type: "POST",
+                    url: 'http://localhost:8080/avaliacoes',
+                    data: data,
+                    contentType: "application/json",
+                    dataType: 'json'
+                });
+                $('.rate').hide();
+                $('.thanks').show();
             }
         </script>
     </body>
